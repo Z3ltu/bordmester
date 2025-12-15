@@ -118,4 +118,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Tilføj nyt navn via inputfelt
   addNameBtn.addEventListener("click",()=>{
-    const newName=(newNameInput.value||"").trim
+    const newName=(newNameInput.value||"").trim();
+    if(!newName){ setStatus("Indtast et navn."); return; }
+    const isFixed=fixedNames.some(fn=>fn.toLowerCase()===newName.toLowerCase());
+    if(isFixed){ setStatus("Navnet findes allerede som fast navn."); return; }
+    if(!firstName) firstName=newName; // husk første navn
+    names.push(newName,newName);
+    names=arrangeNames(names);
+    drawWheel();
+    newNameInput.value="";
+    setStatus(`Tilføjet: ${newName} × 2`);
+  });
+
+  // Klik på hjulet → fjern navnet 2×
+  canvas.addEventListener("click",(e)=>{
+    if(!names.length) return;
+    const rect=canvas.getBoundingClientRect();
+    const x=e.clientX-rect.left-canvas.width/2;
+    const y=e.clientY-rect.top-canvas.height/2;
+    const angle=Math.atan2(y,x);
+    let adjusted=angle-startAngle;
+    if(adjusted<0) adjusted+=2*Math.PI;
+    const index=Math.floor(adjusted/arc);
+    const clickedName=names[index];
+    if(clickedName){
+      let count=0;
+      names=names.filter(n=>{
+        if(n===clickedName && count<2){ count++; return false; }
+        return true;
+      });
+      names=arrangeNames(names);
+      drawWheel();
+      setStatus(`Fjernet: ${clickedName} × ${count}`);
+    }
+  });
+
+  drawWheel();
+  setStatus("Hjulet starter tomt. Tilføj navne med knapper eller feltet.");
+});
