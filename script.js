@@ -178,10 +178,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const x = e.clientX - rect.left - canvas.width / 2;
     const y = e.clientY - rect.top - canvas.height / 2;
     const angle = Math.atan2(y, x);
-    let adjusted = angle - startAngle;
+
+    let adjusted = (angle - startAngle) % (2 * Math.PI);
     if (adjusted < 0) adjusted += 2 * Math.PI;
+
     const index = Math.floor(adjusted / arc);
     const clickedName = names[index];
+
     if (clickedName) {
       drawWheel(index);
       setTimeout(() => {
