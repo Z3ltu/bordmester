@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setStatus(msg){ statusDiv.textContent = msg || ""; }
 
-  // Sikrer at ingen ens navne står ved siden af hinanden
   function arrangeNames(list) {
     if (list.length <= 1) return list.slice();
     let pool = list.slice();
@@ -71,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.restore();
     }
 
-    // pilen øverst
     ctx.fillStyle = "#000";
     ctx.beginPath();
     ctx.moveTo(canvas.width/2 - 15, 0);
@@ -81,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.fill();
   }
 
-  // Korrekt beregning af hvilket felt pilen peger på
   function rotateWheel(){
     spinAngle *= 0.97;
     startAngle += (spinAngle * Math.PI) / 180;
@@ -93,8 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
       spinning = false;
       if (!names.length) return;
 
-      // pilen er ved vinkel 0 (øverst)
-      let adjusted = (2 * Math.PI - (startAngle % (2 * Math.PI))) % (2 * Math.PI);
+      let adjusted = (2 * Math.PI - (startAngle % (2 * Math.PI)) - arc / 2) % (2 * Math.PI);
       const index = Math.floor(adjusted / arc);
       const chosen = names[index];
 
@@ -122,7 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   });
 
-  // Klik på faste navne-knapper
   document.querySelectorAll(".nameBtn").forEach(btn => {
     btn.addEventListener("click", () => {
       if (spinning) {
@@ -131,14 +126,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       const n = btn.dataset.name;
       if (!firstName) firstName = n;
-      names.push(n, n);
+      names.push(n, n, n);
       names = arrangeNames(names);
       drawWheel();
-      setStatus(`Tilføjet: ${n} × 2`);
+      setStatus(`Tilføjet: ${n} × 3`);
     });
   });
 
-  // Tilføj nyt navn via inputfelt
   addNameBtn.addEventListener("click", () => {
     if (spinning) {
       setStatus("Du kan ikke tilføje navne mens hjulet drejer.");
@@ -155,14 +149,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     if (!firstName) firstName = newName;
-    names.push(newName, newName);
+    names.push(newName, newName, newName);
     names = arrangeNames(names);
     drawWheel();
     newNameInput.value = "";
-    setStatus(`Tilføjet: ${newName} × 2`);
+    setStatus(`Tilføjet: ${newName} × 3`);
   });
 
-  // Klik på hjulet → highlight og fjern navnet 2×
   canvas.addEventListener("click", (e) => {
     if (!names.length) return;
     const rect = canvas.getBoundingClientRect();
@@ -178,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         let count = 0;
         names = names.filter(n => {
-          if (n === clickedName && count < 2) {
+          if (n === clickedName && count < 3) {
             count++;
             return false;
           }
