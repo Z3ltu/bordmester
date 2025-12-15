@@ -105,10 +105,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Klik på faste navne-knapper
-  document.addEventListener("click",(e)=>{
-    const btn=e.target.closest(".nameBtn");
-    if(!btn) return;
-    const n=btn.dataset.name;
-    if(!firstName) firstName=n; // husk første navn
-    names.push(n,n);
-    names=arrange
+  document.querySelectorAll(".nameBtn").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const n=btn.dataset.name;
+      if(!firstName) firstName=n; // husk første navn
+      names.push(n,n);
+      names=arrangeNames(names);
+      drawWheel();
+      setStatus(`Tilføjet: ${n} × 2`);
+    });
+  });
+
+  // Tilføj nyt navn via inputfelt
+  addNameBtn.addEventListener("click",()=>{
+    const newName=(newNameInput.value||"").trim
