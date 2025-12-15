@@ -11,39 +11,99 @@ document.addEventListener("DOMContentLoaded", () => {
   let names = [];
   let firstName = null;
   const fixedNames = ["Anders","Rikke","Lars","Charlotte","Patrick","Marianne","Lars Henrik","Brian"];
-  const colors = ["#FF5733","#33FF57","#3357FF","#FF33A6","#FFC300","#8E44AD","#00CED1","#FF8C00"];
+
+  // Base palette (kan udvides)
+  const baseColors = ["#FF5733","#33A852","#3369E8","#FF33A6","#FFB300","#8E44AD","#00CED1","#FF8C00","#2ECC71","#E74C3C","#3498DB"];
   let startAngle = 0, arc = 0, spinAngle = 0, spinning = false;
 
   function setStatus(msg){ statusDiv.textContent = msg || ""; }
 
+  // Ingen nabo-duplikater i navne
   function arrangeNames(list) {
     if (list.length <= 1) return list.slice();
     let pool = list.slice();
-    pool.sort(() => Math.random() - 0.5);
 
-    for (let attempt = 0; attempt < 1000; attempt++) {
+    // Forsøg med random omrokering
+    for (let attempt = 0; attempt < 2000; attempt++) {
+      pool.sort(() => Math.random() - 0.5);
       let valid = true;
       for (let i = 0; i < pool.length; i++) {
         let next = pool[(i + 1) % pool.length];
         if (pool[i] === next) { valid = false; break; }
       }
       if (valid) return pool;
-      pool.sort(() => Math.random() - 0.5);
     }
-    return pool;
+
+    // Fallback: greedy placering
+    const counts = {};
+    pool.forEach(n => counts[n] = (counts[n] || 0) + 1);
+    const uniques = Object.keys(counts).sort((a,b) => counts[b]-counts[a]);
+    const res = new Array(pool.length);
+    let idx = 0;
+    for (const name of uniques) {
+      for (let i = 0; i < counts[name]; i++) {
+        res[idx] = name;
+        idx = (idx + 2) % res.length; // fordel med mellemrum
+      }
+    }
+    // Hvis der stadig opstår nabo-dupl., roter lidt
+    for (let shift = 0; shift < res.length; shift++) {
+      let ok = true;
+      for (let i = 0; i < res.length; i++) {
+        if (res[i] === res[(i+1)%res.length]) { ok = false; break; }
+      }
+      if (ok) return res;
+      res.push(res.shift());
+    }
+    return res;
   }
 
-  function shuffleColors(n){
-    let shuffled = colors.slice();
-    while (shuffled.length < n) shuffled = shuffled.concat(colors);
-    return shuffled.slice(0, n);
+  // Generer farver uden nabo-duplikater (inkl. første/ sidste)
+  function generateWheelColors(n){
+    if (n <= baseColors.length) {
+      // Tag en shuffled palet og trim
+      const shuffled = baseColors.slice().sort(() => Math.random() - 0.5).slice(0, n);
+      // Fix naboer hvis nogen er ens (usandsynligt når unikke farver, men for sikkerhed)
+      for (let i = 1; i < shuffled.length; i++) {
+        if (shuffled[i] === shuffled[i-1]) {
+          // swap med en anden
+          const j = (i + 2) % shuffled.length;
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+      }
+      if (shuffled[0] === shuffled[shuffled.length-1]) {
+        const j = Math.floor(shuffled.length/2);
+        [shuffled[shuffled.length-1], shuffled[j]] = [shuffled[j], shuffled[shuffled.length-1]];
+      }
+      return shuffled;
+    }
+    // Hvis n > paletten, cykl med offset, så naboer ikke matcher
+    const colors = [];
+    const L = baseColors.length;
+    for (let i = 0; i < n; i++) {
+      // Skift offset for hver runde for at undgå gentagelse ved brud
+      const ring = Math.floor(i / L);
+      const pos = i % L;
+      const idx = (pos + ring) % L;
+      let candidate = baseColors[idx];
+      // Sikr ingen nabo-dupl.
+      if (i > 0 && candidate === colors[i-1]) {
+        candidate = baseColors[(idx + 1) % L];
+      }
+      colors.push(candidate);
+    }
+    // Sikr også første/ sidste
+    if (colors.length > 1 && colors[0] === colors[colors.length-1]) {
+      colors[colors.length-1] = baseColors[(baseColors.indexOf(colors[colors.length-1]) + 1) % L];
+    }
+    return colors;
   }
 
   function drawWheel(highlightIndex = null){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!names.length) return;
     arc = Math.PI * 2 / names.length;
-    const wheelColors = shuffleColors(names.length);
+    const wheelColors = generateWheelColors(names.length);
 
     for (let i = 0; i < names.length; i++) {
       const angle = startAngle + i * arc;
@@ -60,6 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ctx.stroke();
       }
 
+      // Tekst i midten af segmentet
       ctx.save();
       ctx.translate(canvas.width/2, canvas.height/2);
       ctx.rotate(angle + arc/2);
@@ -70,6 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.restore();
     }
 
+    // Pilen øverst (top)
     ctx.fillStyle = "#000";
     ctx.beginPath();
     ctx.moveTo(canvas.width/2 - 15, 0);
@@ -79,6 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.fill();
   }
 
+  // Korrekt beregning: pilens vinkel er -π/2 (øverst i canvas-koordinater)
   function rotateWheel(){
     spinAngle *= 0.97;
     startAngle += (spinAngle * Math.PI) / 180;
@@ -90,7 +153,9 @@ document.addEventListener("DOMContentLoaded", () => {
       spinning = false;
       if (!names.length) return;
 
-      let adjusted = (2 * Math.PI - (startAngle % (2 * Math.PI)) - arc / 2) % (2 * Math.PI);
+      const pointerAngle = -Math.PI / 2; // top
+      let adjusted = (pointerAngle - (startAngle % (2 * Math.PI))) % (2 * Math.PI);
+      if (adjusted < 0) adjusted += 2 * Math.PI;
       const index = Math.floor(adjusted / arc);
       const chosen = names[index];
 
@@ -118,6 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   });
 
+  // Faste navne-knapper (lås under spin) – tilføj 3×
   document.querySelectorAll(".nameBtn").forEach(btn => {
     btn.addEventListener("click", () => {
       if (spinning) {
@@ -133,6 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Tilføj nyt navn via inputfelt (lås under spin) – tilføj 3×
   addNameBtn.addEventListener("click", () => {
     if (spinning) {
       setStatus("Du kan ikke tilføje navne mens hjulet drejer.");
@@ -156,6 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus(`Tilføjet: ${newName} × 3`);
   });
 
+  // Klik på hjulet → highlight og fjern navnet 3×
   canvas.addEventListener("click", (e) => {
     if (!names.length) return;
     const rect = canvas.getBoundingClientRect();
