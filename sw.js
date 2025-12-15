@@ -1,4 +1,4 @@
-const CACHE_NAME = "bordmester-cache-v1";
+const CACHE_NAME = "bordmester-cache-v2";
 const urlsToCache = [
   "/bordmester/",
   "/bordmester/index.html",
