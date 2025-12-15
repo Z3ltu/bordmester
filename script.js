@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d");
 const resultDiv = document.getElementById("result");
 const spinBtn = document.getElementById("spinBtn");
 const resetBtn = document.getElementById("resetBtn");
-const saveNamesBtn = document.getElementById("saveNamesBtn");
+const nameButtons = document.querySelectorAll(".nameBtn");
 
 let names = JSON.parse(localStorage.getItem("bordmester_names") || "[]");
 let colors = ["#FF5733","#33FF57","#3357FF","#FF33A6","#FFC300","#8E44AD","#00CED1","#FF8C00"];
@@ -110,21 +110,15 @@ resetBtn.addEventListener("click",()=>{
   ctx.clearRect(0,0,canvas.width,canvas.height);
 });
 
-saveNamesBtn.addEventListener("click",()=>{
-  const checkboxes = document.querySelectorAll("#nameList input[type=checkbox]");
-  let list = Array.from(checkboxes).filter(cb=>cb.checked).map(cb=>cb.value);
-
-  // indsæt hver navn 2x
-  list = list.flatMap(n => [n,n]);
-
-  // arranger så ingen naboer er ens (på nær første der kan ændres)
-  list = arrangeNames(list);
-
-  if (list.length) {
-    names=list;
+// Klik på navne-knapper → tilføj 2x
+nameButtons.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const n = btn.dataset.name;
+    names.push(n,n); // indsæt 2x
+    names = arrangeNames(names); // sikrer ingen naboer er ens
     localStorage.setItem("bordmester_names",JSON.stringify(names));
     drawWheel();
-  }
+  });
 });
 
 // init
