@@ -18,35 +18,34 @@
     canvas {
       display: block;
       margin: 0 auto 20px;
-      width: 100%;
       max-width: 400px;
+      width: 100%;
       height: auto;
       border: 2px solid #333;
       border-radius: 10px;
       background: #fff;
     }
-    button, input {
+    button {
+      margin: 5px;
+      padding: 10px 20px;
       font-size: 16px;
-      padding: 12px;
-      margin: 8px 0;
-      border-radius: 6px;
-      width: 90%;
-      max-width: 320px;
+      border-radius: 5px;
+      cursor: pointer;
     }
     #spinBtn { background: #2196F3; color: #fff; border: none; }
     #resetBtn { background: #f44336; color: #fff; border: none; }
     .nameBtn { background: #4CAF50; color: #fff; border: none; }
     input {
+      padding: 8px;
+      font-size: 16px;
+      margin: 10px 0;
+      width: 80%;
+      max-width: 300px;
       border: 1px solid #ccc;
+      border-radius: 5px;
     }
     #status { margin-top: 15px; font-style: italic; color: #555; }
     #result { font-weight: bold; margin-top: 15px; }
-    /* Mobilvenlig spacing */
-    @media (max-width: 600px) {
-      h1 { font-size: 22px; }
-      button, input { font-size: 18px; }
-      canvas { max-width: 320px; }
-    }
   </style>
 </head>
 <body>
