@@ -75,15 +75,26 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.closePath(); ctx.fill();
   }
 
+  // Rettet beregning af hvilket felt pilen peger på
   function rotateWheel(){
-    spinAngle*=0.97; startAngle+=(spinAngle*Math.PI)/180; drawWheel();
-    if(spinAngle>0.2){ requestAnimationFrame(rotateWheel); }
-    else{
-      spinning=false;
-      if(!names.length) return;
-      const index=Math.floor(((Math.PI*2-startAngle)%(Math.PI*2))/arc);
-      const chosen=names[index];
-      resultDiv.textContent="🎉 Pilen peger på: "+chosen;
+    spinAngle *= 0.97;
+    startAngle += (spinAngle * Math.PI) / 180;
+    drawWheel();
+
+    if (spinAngle > 0.2) {
+      requestAnimationFrame(rotateWheel);
+    } else {
+      spinning = false;
+      if (!names.length) return;
+
+      // pilen er ved vinkel 0 (øverst)
+      let adjusted = (0 - startAngle) % (2 * Math.PI);
+      if (adjusted < 0) adjusted += 2 * Math.PI;
+
+      const index = Math.floor(adjusted / arc);
+      const chosen = names[index];
+
+      resultDiv.textContent = "🎉 Pilen peger på: " + chosen;
       setStatus("");
     }
   }
