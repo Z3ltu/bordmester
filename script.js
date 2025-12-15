@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setStatus(msg){ statusDiv.textContent = msg || ""; }
 
+  // Sikrer at ingen ens navne står ved siden af hinanden
   function arrangeNames(list) {
     if (list.length <= 1) return list.slice();
     let pool = list.slice();
@@ -70,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.restore();
     }
 
+    // pilen øverst
     ctx.fillStyle = "#000";
     ctx.beginPath();
     ctx.moveTo(canvas.width/2 - 15, 0);
@@ -79,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.fill();
   }
 
+  // Korrekt beregning af hvilket felt pilen peger på
   function rotateWheel(){
     spinAngle *= 0.97;
     startAngle += (spinAngle * Math.PI) / 180;
@@ -90,7 +93,9 @@ document.addEventListener("DOMContentLoaded", () => {
       spinning = false;
       if (!names.length) return;
 
-      let adjusted = (2 * Math.PI - (startAngle % (2 * Math.PI))) % (2 * Math.PI);
+      let adjusted = (-startAngle) % (2 * Math.PI);
+      if (adjusted < 0) adjusted += 2 * Math.PI;
+
       const index = Math.floor(adjusted / arc);
       const chosen = names[index];
 
@@ -118,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   });
 
+  // Klik på faste navne-knapper
   document.querySelectorAll(".nameBtn").forEach(btn => {
     btn.addEventListener("click", () => {
       const n = btn.dataset.name;
@@ -129,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Tilføj nyt navn via inputfelt
   addNameBtn.addEventListener("click", () => {
     const newName = (newNameInput.value || "").trim();
     if (!newName) {
@@ -148,6 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus(`Tilføjet: ${newName} × 2`);
   });
 
+  // Klik på hjulet → highlight og fjern navnet 2×
   canvas.addEventListener("click", (e) => {
     if (!names.length) return;
     const rect = canvas.getBoundingClientRect();
