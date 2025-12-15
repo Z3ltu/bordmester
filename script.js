@@ -125,6 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // Klik på faste navne-knapper
   document.querySelectorAll(".nameBtn").forEach(btn => {
     btn.addEventListener("click", () => {
+      if (spinning) {
+        setStatus("Du kan ikke tilføje navne mens hjulet drejer.");
+        return;
+      }
       const n = btn.dataset.name;
       if (!firstName) firstName = n;
       names.push(n, n);
@@ -136,6 +140,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Tilføj nyt navn via inputfelt
   addNameBtn.addEventListener("click", () => {
+    if (spinning) {
+      setStatus("Du kan ikke tilføje navne mens hjulet drejer.");
+      return;
+    }
     const newName = (newNameInput.value || "").trim();
     if (!newName) {
       setStatus("Indtast et navn.");
