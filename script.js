@@ -3,8 +3,9 @@ const ctx = canvas.getContext("2d");
 const resultDiv = document.getElementById("result");
 const spinBtn = document.getElementById("spinBtn");
 const resetBtn = document.getElementById("resetBtn");
-const namesInput = document.getElementById("namesInput");
 const saveNamesBtn = document.getElementById("saveNamesBtn");
+const newNameInput = document.getElementById("newNameInput");
+const addNameBtn = document.getElementById("addNameBtn");
 
 let names = JSON.parse(localStorage.getItem("bordmester_names") || "[]");
 let colors = ["#FF5733","#33FF57","#3357FF","#FF33A6","#FFC300","#8E44AD","#00CED1","#FF8C00"];
@@ -92,11 +93,24 @@ resetBtn.addEventListener("click",()=>{
 });
 
 saveNamesBtn.addEventListener("click",()=>{
-  const list = namesInput.value.split(",").map(s=>s.trim()).filter(Boolean);
+  const checkboxes = document.querySelectorAll("#nameList input[type=checkbox]");
+  const list = Array.from(checkboxes).filter(cb=>cb.checked).map(cb=>cb.value);
   if (list.length) {
     names=list;
     localStorage.setItem("bordmester_names",JSON.stringify(names));
     drawWheel();
+  }
+});
+
+addNameBtn.addEventListener("click",()=>{
+  const newName = newNameInput.value.trim();
+  if (newName) {
+    const nameListDiv = document.getElementById("nameList");
+    const label = document.createElement("label");
+    label.innerHTML = `<input type="checkbox" value="${newName}"> ${newName}`;
+    nameListDiv.insertBefore(label, saveNamesBtn);
+    nameListDiv.insertBefore(document.createElement("br"), saveNamesBtn);
+    newNameInput.value = "";
   }
 });
 
