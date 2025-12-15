@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded",()=>{
   const c=document.getElementById("wheel"),ctx=c.getContext("2d"),
         res=document.getElementById("result"),stat=document.getElementById("status"),
         spin=document.getElementById("spinBtn"),reset=document.getElementById("resetBtn"),
@@ -6,9 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let names=[],first=null,spinning=false,startAngle=Math.random()*2*Math.PI,arc=0;
   const fixed=["Anders","Rikke","Lars","Charlotte","Patrick","Marianne","Lars Henrik","Brian"],
         colors=["#FF5733","#33A852","#3369E8","#FF33A6","#FFB300","#8E44AD","#00CED1","#FF8C00","#2ECC71","#E74C3C","#3498DB"];
-  const setStat=m=>stat.textContent=m||"";
-  const arrange=l=>{for(let t=0;t<500;t++){l.sort(()=>Math.random()-0.5);if(l.every((n,i)=>n!==l[(i+1)%l.length]))return l;}return l;};
-  const getCols=n=>Array.from({length:n},(_,i)=>colors[i%colors.length]);
+  const setStat=m=>stat.textContent=m||"",arrange=l=>{for(let t=0;t<500;t++){l.sort(()=>Math.random()-0.5);if(l.every((n,i)=>n!==l[(i+1)%l.length]))return l;}return l;},
+        getCols=n=>Array.from({length:n},(_,i)=>colors[i%colors.length]);
   function drawWheel(h=null){
     ctx.clearRect(0,0,c.width,c.height); if(!names.length)return;
     arc=2*Math.PI/names.length; const cols=getCols(names.length);
@@ -32,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const p=-Math.PI/2; let adj=(p-(startAngle%(2*Math.PI)))%(2*Math.PI);
         if(adj<0)adj+=2*Math.PI; const idx=Math.floor(adj/arc);
         res.textContent="🎉 Pilen peger på: "+names[idx]; setStat(""); return;}
-      let speed=now<decelS?0.3:0.3*(1-(now-decelS)/decel);
+      let speed=now<decelS?0.3:0.3*Math.pow(1-(now-decelS)/decel,3); // dramatisk nedbremsning
       startAngle+=speed; drawWheel(); requestAnimationFrame(step);
     } requestAnimationFrame(step);
   }
