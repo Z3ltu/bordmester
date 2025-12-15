@@ -38,6 +38,7 @@
     #spinBtn { background: #007bff; color: white; }
     #resetBtn { background: #dc3545; color: white; }
     .nameBtn { background: #28a745; color: white; }
+    #addNameBtn { background: #17a2b8; color: white; }
     #result {
       margin-top: 20px;
       font-size: 20px;
@@ -45,6 +46,13 @@
     }
     #nameList {
       margin:16px; text-align:center;
+    }
+    #newNameInput {
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #ccc;
+      width:70%;
+      max-width:300px;
     }
   </style>
 </head>
@@ -60,7 +68,7 @@
   <div id="result"></div>
 
   <div id="nameList">
-    <h3>Klik for at tilføje navne:</h3>
+    <h3>Klik for at tilføje faste navne:</h3>
     <button class="nameBtn" data-name="Anders">Anders</button>
     <button class="nameBtn" data-name="Rikke">Rikke</button>
     <button class="nameBtn" data-name="Lars">Lars</button>
@@ -69,6 +77,11 @@
     <button class="nameBtn" data-name="Marianne">Marianne</button>
     <button class="nameBtn" data-name="Lars Henrik">Lars Henrik</button>
     <button class="nameBtn" data-name="Brian">Brian</button>
+  </div>
+
+  <div style="margin:16px;">
+    <input id="newNameInput" type="text" placeholder="Tilføj nyt navn (ikke på listen)">
+    <button id="addNameBtn">Tilføj navn</button>
   </div>
 
   <script src="script.js"></script>
