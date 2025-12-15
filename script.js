@@ -4,16 +4,18 @@ const resultDiv = document.getElementById("result");
 const spinBtn = document.getElementById("spinBtn");
 const resetBtn = document.getElementById("resetBtn");
 const nameButtons = document.querySelectorAll(".nameBtn");
+const newNameInput = document.getElementById("newNameInput");
+const addNameBtn = document.getElementById("addNameBtn");
 
-let names = JSON.parse(localStorage.getItem("bordmester_names") || "[]");
+let names = []; // starter tomt
 let colors = ["#FF5733","#33FF57","#3357FF","#FF33A6","#FFC300","#8E44AD","#00CED1","#FF8C00"];
 
 let startAngle = 0;
-let arc = names.length ? Math.PI * 2 / names.length : 0;
+let arc = 0;
 let spinAngle = 0;
 let spinning = false;
 
-// Sikrer at ingen ens navne står ved siden af hinanden
+// sikrer at ingen ens navne står ved siden af hinanden
 function arrangeNames(list) {
   if (list.length <= 1) return list;
   let arranged = [];
@@ -23,7 +25,6 @@ function arrangeNames(list) {
   while (pool.length) {
     let next = pool.find(n => n !== arranged[arranged.length-1]);
     if (!next) {
-      // hvis kun samme navn tilbage, byt med første
       next = pool[0];
       arranged[0] = next;
     }
@@ -105,21 +106,28 @@ spinBtn.addEventListener("click",()=>{
 
 resetBtn.addEventListener("click",()=>{
   names=[];
-  localStorage.removeItem("bordmester_names");
   resultDiv.textContent="";
   ctx.clearRect(0,0,canvas.width,canvas.height);
 });
 
-// Klik på navne-knapper → tilføj 2x
+// Klik på faste navne-knapper → tilføj 2x
 nameButtons.forEach(btn=>{
   btn.addEventListener("click",()=>{
     const n = btn.dataset.name;
     names.push(n,n); // indsæt 2x
-    names = arrangeNames(names); // sikrer ingen naboer er ens
-    localStorage.setItem("bordmester_names",JSON.stringify(names));
+    names = arrangeNames(names);
     drawWheel();
   });
 });
 
-// init
-drawWheel();
+// Tilføj nyt navn via inputfelt (kun hvis ikke allerede i faste navne)
+addNameBtn.addEventListener("click",()=>{
+  const newName = newNameInput.value.trim();
+  if (newName && !Array.from(nameButtons).some(btn=>btn.dataset.name.toLowerCase() === newName.toLowerCase())) {
+    names.push(newName,newName);
+    names = arrangeNames(names);
+    drawWheel();
+    newNameInput.value = "";
+  } else {
+    alert("Navnet er tomt eller findes allerede i listen over faste navne.");
+ 
