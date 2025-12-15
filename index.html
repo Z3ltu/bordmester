@@ -39,17 +39,21 @@
     #spinBtn { background: #007bff; color: white; }
     #resetBtn { background: #dc3545; color: white; }
     #saveNamesBtn { background: #28a745; color: white; }
+    #addNameBtn { background: #17a2b8; color: white; }
     #result {
       margin-top: 20px;
       font-size: 20px;
       font-weight: bold;
     }
-    #namesInput {
-      width: 80%;
-      max-width: 400px;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+    #nameList {
+      margin:16px; text-align:left; display:inline-block;
+    }
+    #newNameInput {
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #ccc;
+      width:70%;
+      max-width:300px;
     }
   </style>
 </head>
@@ -64,9 +68,22 @@
 
   <div id="result"></div>
 
+  <div id="nameList">
+    <h3>Vælg navne:</h3>
+    <label><input type="checkbox" value="Anders"> Anders</label><br>
+    <label><input type="checkbox" value="Rikke"> Rikke</label><br>
+    <label><input type="checkbox" value="Lars"> Lars</label><br>
+    <label><input type="checkbox" value="Charlotte"> Charlotte</label><br>
+    <label><input type="checkbox" value="Patrick"> Patrick</label><br>
+    <label><input type="checkbox" value="Marianne"> Marianne</label><br>
+    <label><input type="checkbox" value="Lars Henrik"> Lars Henrik</label><br>
+    <label><input type="checkbox" value="Brian"> Brian</label><br>
+    <button id="saveNamesBtn">Gem valgte navne</button>
+  </div>
+
   <div style="margin:16px;">
-    <input id="namesInput" type="text" placeholder="Skriv navne adskilt af komma">
-    <button id="saveNamesBtn">Gem navne</button>
+    <input id="newNameInput" type="text" placeholder="Tilføj nyt navn">
+    <button id="addNameBtn">Tilføj navn</button>
   </div>
 
   <script src="script.js"></script>
