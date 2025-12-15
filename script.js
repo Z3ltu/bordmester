@@ -93,9 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
       spinning = false;
       if (!names.length) return;
 
-      let adjusted = (-startAngle) % (2 * Math.PI);
-      if (adjusted < 0) adjusted += 2 * Math.PI;
-
+      // pilen er ved vinkel 0 (øverst)
+      let adjusted = (2 * Math.PI - (startAngle % (2 * Math.PI))) % (2 * Math.PI);
       const index = Math.floor(adjusted / arc);
       const chosen = names[index];
 
