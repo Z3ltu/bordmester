@@ -16,42 +16,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setStatus(msg){ statusDiv.textContent = msg || ""; }
 
-  function arrangeNames(list){
-    if(list.length<=1) return list.slice();
-    const pool=list.slice(); const arranged=[pool.shift()];
-    while(pool.length){
-      let idx=pool.findIndex(n=>n!==arranged[arranged.length-1]);
-      if(idx===-1) idx=0;
-      arranged.push(pool[idx]); pool.splice(idx,1);
-    }
-    if(arranged.length>1 && arranged[0]===arranged[arranged.length-1]){
-      for(let i=arranged.length-2;i>=0;i--){
-        if(arranged[i]!==arranged[0]){
-          [arranged[arranged.length-1],arranged[i]]=[arranged[i],arranged[arranged.length-1]];
-          break;
-        }
+  // Sikrer at ingen ens navne står ved siden af hinanden
+  function arrangeNames(list) {
+    if (list.length <= 1) return list.slice();
+    let pool = list.slice();
+    pool.sort(() => Math.random() - 0.5);
+
+    for (let attempt = 0; attempt < 1000; attempt++) {
+      let valid = true;
+      for (let i = 0; i < pool.length; i++) {
+        let next = pool[(i + 1) % pool.length];
+        if (pool[i] === next) { valid = false; break; }
       }
+      if (valid) return pool;
+      pool.sort(() => Math.random() - 0.5);
     }
-    return arranged;
+    return pool;
   }
 
   function shuffleColors(n){
     let shuffled=colors.slice();
     while(shuffled.length<n) shuffled=shuffled.concat(colors);
     shuffled=shuffled.slice(0,n);
-    for(let i=1;i<shuffled.length;i++){
-      if(shuffled[i]===shuffled[i-1]){
-        const j=(i+1)%shuffled.length;
-        [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
-      }
-    }
-    if(shuffled.length>1 && shuffled[0]===shuffled[shuffled.length-1]){
-      [shuffled[0],shuffled[shuffled.length-1]]=[shuffled[shuffled.length-1],shuffled[0]];
-    }
     return shuffled;
   }
 
-  function drawWheel(){
+  function drawWheel(highlightIndex=null){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     if(!names.length) return;
     arc=Math.PI*2/names.length;
@@ -63,6 +53,13 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.moveTo(canvas.width/2,canvas.height/2);
       ctx.arc(canvas.width/2,canvas.height/2,canvas.width/2,angle,angle+arc);
       ctx.closePath(); ctx.fill();
+
+      if(highlightIndex===i){
+        ctx.strokeStyle="yellow";
+        ctx.lineWidth=5;
+        ctx.stroke();
+      }
+
       ctx.save();
       ctx.translate(canvas.width/2,canvas.height/2);
       ctx.rotate(angle+arc/2);
@@ -108,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".nameBtn").forEach(btn=>{
     btn.addEventListener("click",()=>{
       const n=btn.dataset.name;
-      if(!firstName) firstName=n; // husk første navn
+      if(!firstName) firstName=n;
       names.push(n,n);
       names=arrangeNames(names);
       drawWheel();
@@ -122,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if(!newName){ setStatus("Indtast et navn."); return; }
     const isFixed=fixedNames.some(fn=>fn.toLowerCase()===newName.toLowerCase());
     if(isFixed){ setStatus("Navnet findes allerede som fast navn."); return; }
-    if(!firstName) firstName=newName; // husk første navn
+    if(!firstName) firstName=newName;
     names.push(newName,newName);
     names=arrangeNames(names);
     drawWheel();
@@ -130,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus(`Tilføjet: ${newName} × 2`);
   });
 
-  // Klik på hjulet → fjern navnet 2×
+  // Klik på hjulet → highlight og fjern navnet 2×
   canvas.addEventListener("click",(e)=>{
     if(!names.length) return;
     const rect=canvas.getBoundingClientRect();
@@ -142,14 +139,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const index=Math.floor(adjusted/arc);
     const clickedName=names[index];
     if(clickedName){
-      let count=0;
-      names=names.filter(n=>{
-        if(n===clickedName && count<2){ count++; return false; }
-        return true;
-      });
-      names=arrangeNames(names);
-      drawWheel();
-      setStatus(`Fjernet: ${clickedName} × ${count}`);
+      drawWheel(index);
+      setTimeout(()=>{
+        let count=0;
+        names=names.filter(n=>{
+          if(n===clickedName && count<2){ count++; return false; }
+          return true;
+        });
+        names=arrangeNames(names);
+        drawWheel();
+        setStatus(`Fjernet: ${clickedName} × ${count}`);
+      },500);
     }
   });
 
