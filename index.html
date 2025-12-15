@@ -1,106 +1,72 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-<meta charset="UTF-8">
-<title>Bord Mester</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bordmester</title>
 
-<!-- PWA (valgfrit) -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
+  <!-- Manifest til PWA -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 
-<style>
-body {
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  margin-top: 20px;
-}
+  <meta name="theme-color" content="#007bff">
 
-canvas {
-  border: 1px solid #333;
-}
-
-#rightPanel {
-  width: 220px;
-}
-
-.nameItem {
-  border: 1px solid #444;
-  padding: 6px;
-  margin: 4px 0;
-  cursor: pointer;
-}
-
-.nameItem:hover {
-  background: #eee;
-}
-
-button {
-  margin-top: 10px;
-  padding: 6px 12px;
-  cursor: pointer;
-}
-
-/* Gør pilen klik-gennemsigtig, så canvas får klik */
-.pointer-guard {
-  pointer-events: none;
-}
-</style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background: #f0f0f0;
+    }
+    h1 {
+      margin-top: 20px;
+    }
+    #wheel {
+      margin: 20px auto;
+      width: 80vw;
+      height: 80vw;
+      max-width: 400px;
+      max-height: 400px;
+      border-radius: 50%;
+      border: 5px solid #333;
+    }
+    #spinBtn {
+      margin-top: 20px;
+      padding: 15px;
+      width: 80%;
+      max-width: 300px;
+      font-size: 1.2em;
+      border-radius: 8px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #spinBtn:active {
+      background: #0056b3;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
-
 <body>
+  <h1>Bordmester 🎡</h1>
 
-<!-- VENSTRE SIDE: HJUL -->
-<div>
-  <h1>Bord Mester</h1>
-
-  <!-- PIL -->
-  <div style="position:relative;width:400px;margin:auto;">
-    <div class="pointer-guard" style="
-      position:absolute;
-      top:-12px;
-      left:185px;
-      width:0;
-      height:0;
-      border-left:15px solid transparent;
-      border-right:15px solid transparent;
-      border-bottom:28px solid black;
-      transform: rotate(180deg);
-    "></div>
-  </div>
-
-  <!-- HJUL -->
   <canvas id="wheel" width="400" height="400"></canvas>
-  <br>
-  <button onclick="spin()">Spin</button>
-</div>
+  <button id="spinBtn">Spin hjulet</button>
+  <div id="result"></div>
 
-<!-- HØJRE SIDE: NAVNE -->
-<div id="rightPanel">
-  <h3>Tilgængelige navne</h3>
-  <div id="available"></div>
-
-  <h3>Tilføj navn</h3>
-  <input id="nameInput" type="text" placeholder="Nyt navn">
-  <br>
-  <button onclick="addNewName()">Tilføj</button>
-
-  <h3>Handlinger</h3>
-  <button onclick="resetWheel()">Nulstil hjul</button>
-</div>
-
-<!-- SCRIPT -->
-<script src="script.js"></script>
-
-<!-- PWA service worker (valgfrit) -->
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js")
-    .then(() => console.log("Service Worker registreret"))
-    .catch(err => console.error("SW fejl:", err));
-}
-</script>
-
+  <script src="script.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js")
+        .then(() => console.log("Service Worker registreret"))
+        .catch(err => console.error("SW fejl:", err));
+    }
+  </script>
 </body>
 </html>
