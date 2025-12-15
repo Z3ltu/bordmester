@@ -3,7 +3,7 @@ const ctx = canvas.getContext("2d");
 const resultDiv = document.getElementById("result");
 const spinBtn = document.getElementById("spinBtn");
 
-const names = ["Anders", "Maria", "Jonas", "Sofie", "Peter", "Lise"];
+const names = ["Anders", "Brian", "Lars", "Rikke", "Lars Henrik", "Marianne", "Patrick"];
 const colors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A6", "#FFC300", "#8E44AD"];
 
 let startAngle = 0;
@@ -66,3 +66,4 @@ spinBtn.addEventListener("click", () => {
 });
 
 drawWheel();
+
