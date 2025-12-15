@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bordmester</title>
 
-  <!-- PWA manifest -->
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <meta name="theme-color" content="#007bff">
@@ -39,7 +38,6 @@
     #spinBtn { background: #007bff; color: white; }
     #resetBtn { background: #dc3545; color: white; }
     #saveNamesBtn { background: #28a745; color: white; }
-    #addNameBtn { background: #17a2b8; color: white; }
     #result {
       margin-top: 20px;
       font-size: 20px;
@@ -47,13 +45,6 @@
     }
     #nameList {
       margin:16px; text-align:left; display:inline-block;
-    }
-    #newNameInput {
-      padding:10px;
-      border-radius:8px;
-      border:1px solid #ccc;
-      width:70%;
-      max-width:300px;
     }
   </style>
 </head>
@@ -79,11 +70,6 @@
     <label><input type="checkbox" value="Lars Henrik"> Lars Henrik</label><br>
     <label><input type="checkbox" value="Brian"> Brian</label><br>
     <button id="saveNamesBtn">Gem valgte navne</button>
-  </div>
-
-  <div style="margin:16px;">
-    <input id="newNameInput" type="text" placeholder="Tilføj nyt navn">
-    <button id="addNameBtn">Tilføj navn</button>
   </div>
 
   <script src="script.js"></script>
