@@ -8,8 +8,6 @@
   <!-- PWA manifest -->
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-
-  <!-- Tema farve til mobil -->
   <meta name="theme-color" content="#007bff">
 
   <style>
@@ -20,9 +18,7 @@
       padding: 0;
       background: #f0f0f0;
     }
-    h1 {
-      margin-top: 20px;
-    }
+    h1 { margin-top: 20px; }
     #wheel {
       margin: 20px auto;
       width: 80vw;
@@ -32,25 +28,28 @@
       border-radius: 50%;
       border: 5px solid #333;
     }
-    #spinBtn {
-      margin-top: 20px;
-      padding: 15px;
-      width: 80%;
-      max-width: 300px;
-      font-size: 1.2em;
+    button {
+      margin: 10px;
+      padding: 12px 20px;
+      font-size: 1.1em;
       border-radius: 8px;
-      background: #007bff;
-      color: white;
       border: none;
       cursor: pointer;
     }
-    #spinBtn:active {
-      background: #0056b3;
-    }
+    #spinBtn { background: #007bff; color: white; }
+    #resetBtn { background: #dc3545; color: white; }
+    #saveNamesBtn { background: #28a745; color: white; }
     #result {
       margin-top: 20px;
       font-size: 20px;
       font-weight: bold;
+    }
+    #namesInput {
+      width: 80%;
+      max-width: 400px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
@@ -58,8 +57,17 @@
   <h1>Bordmester 🎡</h1>
 
   <canvas id="wheel" width="400" height="400"></canvas>
-  <button id="spinBtn">Spin hjulet</button>
+  <div>
+    <button id="spinBtn">Spin hjulet</button>
+    <button id="resetBtn">Nulstil hjulet</button>
+  </div>
+
   <div id="result"></div>
+
+  <div style="margin:16px;">
+    <input id="namesInput" type="text" placeholder="Skriv navne adskilt af komma">
+    <button id="saveNamesBtn">Gem navne</button>
+  </div>
 
   <script src="script.js"></script>
   <script>
