@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let startAngle = Math.random() * 2 * Math.PI;
   let arc = 0;
 
-  const fixedNames = ["Anders","Rikke","Lars","Charlotte","Patrick","Marianne","Lars Henrik","Brian"];
+  const fixedNames = ["Anders","Brian","Charlotte","Lars","Lars Henrik","Marianne","Patrick","Rikke"];
   const baseColors = ["#FF5733","#33A852","#3369E8","#FF33A6","#FFB300","#8E44AD","#00CED1","#FF8C00","#2ECC71","#E74C3C","#3498DB"];
 
   function setStatus(msg) { statusDiv.textContent = msg || ""; }
@@ -180,3 +180,4 @@ document.addEventListener("DOMContentLoaded", () => {
   drawWheel();
   setStatus("Hjulet starter tomt. Tilføj navne med knapper eller feltet.");
 });
+
