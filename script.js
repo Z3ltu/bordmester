@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   });
 
-  // Faste navne-knapper – tilføj 3×
+  // Faste navne-knapper – tilføj 2×
   document.querySelectorAll(".nameBtn").forEach(btn => {
     btn.addEventListener("click", () => {
       if (spinning) {
@@ -140,14 +140,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       const n = btn.dataset.name;
       if (!firstName) firstName = n;
-      names.push(n, n, n);
+      names.push(n, n);
       names = arrangeNames(names);
       drawWheel();
-      setStatus(`Tilføjet: ${n} × 3`);
+      setStatus(`Tilføjet: ${n} × 2`);
     });
   });
 
-  // Tilføj nyt navn via inputfelt – tilføj 3×
+  // Tilføj nyt navn via inputfelt – tilføj 2×
   addNameBtn.addEventListener("click", () => {
     if (spinning) {
       setStatus("Du kan ikke tilføje navne mens hjulet drejer.");
@@ -164,14 +164,14 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     if (!firstName) firstName = newName;
-    names.push(newName, newName, newName);
+    names.push(newName, newName);
     names = arrangeNames(names);
     drawWheel();
     newNameInput.value = "";
-    setStatus(`Tilføjet: ${newName} × 3`);
+    setStatus(`Tilføjet: ${newName} × 2`);
   });
 
-  // Klik på hjulet → highlight og fjern navnet 3×
+  // Klik på hjulet → highlight og fjern navnet 2×
   canvas.addEventListener("click", (e) => {
     if (!names.length) return;
     const rect = canvas.getBoundingClientRect();
@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         let count = 0;
         names = names.filter(n => {
-          if (n === clickedName && count < 3) {
+          if (n === clickedName && count < 2) {
             count++;
             return false;
           }
