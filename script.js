@@ -4,8 +4,6 @@ const resultDiv = document.getElementById("result");
 const spinBtn = document.getElementById("spinBtn");
 const resetBtn = document.getElementById("resetBtn");
 const saveNamesBtn = document.getElementById("saveNamesBtn");
-const newNameInput = document.getElementById("newNameInput");
-const addNameBtn = document.getElementById("addNameBtn");
 
 let names = JSON.parse(localStorage.getItem("bordmester_names") || "[]");
 let colors = ["#FF5733","#33FF57","#3357FF","#FF33A6","#FFC300","#8E44AD","#00CED1","#FF8C00"];
@@ -14,6 +12,26 @@ let startAngle = 0;
 let arc = names.length ? Math.PI * 2 / names.length : 0;
 let spinAngle = 0;
 let spinning = false;
+
+// Sikrer at ingen ens navne står ved siden af hinanden
+function arrangeNames(list) {
+  if (list.length <= 1) return list;
+  let arranged = [];
+  let pool = [...list];
+
+  arranged.push(pool.shift()); // første navn
+  while (pool.length) {
+    let next = pool.find(n => n !== arranged[arranged.length-1]);
+    if (!next) {
+      // hvis kun samme navn tilbage, byt med første
+      next = pool[0];
+      arranged[0] = next;
+    }
+    arranged.push(next);
+    pool.splice(pool.indexOf(next),1);
+  }
+  return arranged;
+}
 
 function shuffleColors(n) {
   let shuffled = [...colors];
@@ -94,23 +112,18 @@ resetBtn.addEventListener("click",()=>{
 
 saveNamesBtn.addEventListener("click",()=>{
   const checkboxes = document.querySelectorAll("#nameList input[type=checkbox]");
-  const list = Array.from(checkboxes).filter(cb=>cb.checked).map(cb=>cb.value);
+  let list = Array.from(checkboxes).filter(cb=>cb.checked).map(cb=>cb.value);
+
+  // indsæt hver navn 2x
+  list = list.flatMap(n => [n,n]);
+
+  // arranger så ingen naboer er ens (på nær første der kan ændres)
+  list = arrangeNames(list);
+
   if (list.length) {
     names=list;
     localStorage.setItem("bordmester_names",JSON.stringify(names));
     drawWheel();
-  }
-});
-
-addNameBtn.addEventListener("click",()=>{
-  const newName = newNameInput.value.trim();
-  if (newName) {
-    const nameListDiv = document.getElementById("nameList");
-    const label = document.createElement("label");
-    label.innerHTML = `<input type="checkbox" value="${newName}"> ${newName}`;
-    nameListDiv.insertBefore(label, saveNamesBtn);
-    nameListDiv.insertBefore(document.createElement("br"), saveNamesBtn);
-    newNameInput.value = "";
   }
 });
 
