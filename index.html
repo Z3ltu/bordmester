@@ -46,7 +46,6 @@
     }
     #status { margin-top: 15px; font-style: italic; color: #555; }
     #result { font-weight: bold; margin-top: 15px; }
-    /* Mobilvenlig justering */
     @media (max-width: 600px) {
       canvas { max-width: 320px; }
       button, input { font-size: 18px; padding: 12px; width: 90%; max-width: 320px; }
@@ -65,15 +64,15 @@
   <p id="status"></p>
 
   <h3>Klik for at tilføje faste navne:</h3>
-  <div>
+  <div id="fixedNames">
     <button class="nameBtn" data-name="Anders">Anders</button>
-    <button class="nameBtn" data-name="Rikke">Rikke</button>
-    <button class="nameBtn" data-name="Lars">Lars</button>
-    <button class="nameBtn" data-name="Charlotte">Charlotte</button>
-    <button class="nameBtn" data-name="Patrick">Patrick</button>
-    <button class="nameBtn" data-name="Marianne">Marianne</button>
-    <button class="nameBtn" data-name="Lars Henrik">Lars Henrik</button>
     <button class="nameBtn" data-name="Brian">Brian</button>
+    <button class="nameBtn" data-name="Charlotte">Charlotte</button>
+    <button class="nameBtn" data-name="Lars">Lars</button>
+    <button class="nameBtn" data-name="Lars Henrik">Lars Henrik</button>
+    <button class="nameBtn" data-name="Marianne">Marianne</button>
+    <button class="nameBtn" data-name="Patrick">Patrick</button>
+    <button class="nameBtn" data-name="Rikke">Rikke</button>
   </div>
 
   <h3>Tilføj nyt navn (ikke på listen):</h3>
