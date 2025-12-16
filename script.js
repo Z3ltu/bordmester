@@ -155,6 +155,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Gør de hardcodede knapper klikbare
+  document.querySelectorAll(".nameBtn").forEach(btn => {
+    btn.addEventListener("pointerup", () => {
+      addName(btn.dataset.name);
+    });
+  });
+
   addNameBtn.addEventListener("pointerup", () => {
     const n = (newNameInput.value || "").trim();
     if (!n) return setStatus("Indtast et navn.");
