@@ -14,12 +14,13 @@ document.addEventListener("DOMContentLoaded", () => {
   let startAngle = Math.random() * 2 * Math.PI;
   let arc = 0;
 
-  // faste navne i alfabetisk rækkefølge (matcher index.html)
+  // Faste navne i alfabetisk rækkefølge (matcher index.html)
   const fixedNames = ["Anders","Brian","Charlotte","Lars","Lars Henrik","Marianne","Patrick","Rikke"];
   const baseColors = ["#FF5733","#33A852","#3369E8","#FF33A6","#FFB300","#8E44AD","#00CED1","#FF8C00","#2ECC71","#E74C3C","#3498DB"];
 
   function setStatus(msg) { statusDiv.textContent = msg || ""; }
 
+  // Forsøger at undgå identiske naboer ved random omrokering
   function arrangeNames(list) {
     if (list.length <= 1) return list.slice();
     for (let attempt = 0; attempt < 500; attempt++) {
@@ -65,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.restore();
     });
 
-    // pilen øverst
+    // Pilen øverst
     ctx.fillStyle = "#000";
     ctx.beginPath();
     ctx.moveTo(canvas.width / 2 - 15, 0);
@@ -76,8 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function rotateWheel() {
-    const duration = 4000 + Math.random() * 4000; // 4–8 sek
-    const decelTime = 5000 + Math.random() * 3000; // 5–8 sek slowdown
+    const duration = 4000 + Math.random() * 4000; // 4–8 sek konstant fart
+    const decelTime = 5000 + Math.random() * 3000; // 5–8 sek slowdown for spænding
     const startTime = performance.now();
     const endTime = startTime + duration;
     const decelStart = endTime - decelTime;
@@ -87,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
         spinning = false;
         if (!names.length) return;
 
-        const pointerAngle = -Math.PI / 2;
+        const pointerAngle = -Math.PI / 2; // Toppen
         let adjusted = (pointerAngle - (startAngle % (2 * Math.PI))) % (2 * Math.PI);
         if (adjusted < 0) adjusted += 2 * Math.PI;
         const index = Math.floor(adjusted / arc);
@@ -100,10 +101,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let speed;
       if (now < decelStart) {
-        speed = 0.3; // konstant fart
+        speed = 0.3; // konstant
       } else {
         const decelProgress = (now - decelStart) / decelTime;
-        speed = 0.3 * Math.pow(1 - decelProgress, 3); // dramatisk nedbremsning
+        speed = 0.3 * Math.pow(1 - decelProgress, 3); // dramatisk slowdown
       }
 
       startAngle += speed;
@@ -114,6 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
     requestAnimationFrame(step);
   }
 
+  // Spin-knap
   spinBtn.addEventListener("pointerup", () => {
     if (!spinning && names.length) {
       spinning = true;
@@ -124,6 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Nulstil
   resetBtn.addEventListener("pointerup", () => {
     names = [];
     firstName = null;
@@ -132,22 +135,22 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     startAngle = Math.random() * 2 * Math.PI;
 
-    // aktiver alle knapper igen
+    // Aktiver alle faste knapper igen
     document.querySelectorAll(".nameBtn").forEach(btn => {
       btn.classList.remove("disabled");
       btn.disabled = false;
     });
   });
 
+  // Tilføj navn (og deaktiver knap hvis det er fast navn)
   function addName(n) {
     if (spinning) return setStatus("Du kan ikke tilføje navne mens hjulet drejer.");
     if (!firstName) firstName = n;
-    names.push(n, n);
+    names.push(n, n); // ×2
     names = arrangeNames(names);
     drawWheel();
     setStatus(`Tilføjet: ${n} × 2`);
 
-    // Deaktiver knappen for dette navn
     const btn = document.querySelector(`.nameBtn[data-name="${n}"]`);
     if (btn) {
       btn.classList.add("disabled");
@@ -155,13 +158,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Gør de hardcodede knapper klikbare
+  // Bind hardcodede knapper til addName
   document.querySelectorAll(".nameBtn").forEach(btn => {
     btn.addEventListener("pointerup", () => {
+      if (btn.disabled) return;
       addName(btn.dataset.name);
     });
   });
 
+  // Tilføj brugerdefineret navn (ikke på faste listen)
   addNameBtn.addEventListener("pointerup", () => {
     const n = (newNameInput.value || "").trim();
     if (!n) return setStatus("Indtast et navn.");
@@ -172,27 +177,30 @@ document.addEventListener("DOMContentLoaded", () => {
     newNameInput.value = "";
   });
 
-  // stop fjernelse mens hjulet drejer
+  // Klik på hjulet for at fjerne valgt felt (ikke mens det drejer)
   canvas.addEventListener("pointerup", e => {
-    if (spinning) return; // 🚫 kan ikke fjerne mens hjulet kører
+    if (spinning) return; // Kan ikke fjerne mens det drejer
     if (!names.length) return;
+
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
     let adjusted = (Math.atan2(y, x) - startAngle) % (2 * Math.PI);
     if (adjusted < 0) adjusted += 2 * Math.PI;
+
     const idx = Math.floor(adjusted / arc);
     const clicked = names[idx];
     if (clicked) {
-      drawWheel(idx);
+      drawWheel(idx); // highlight kort
       setTimeout(() => {
         let count = 0;
+        // Fjern to forekomster af navnet
         names = names.filter(n => n !== clicked || count++ >= 2);
         names = arrangeNames(names);
         drawWheel();
-        setStatus(`Fjernet: ${clicked} × ${count}`);
+        setStatus(`Fjernet: ${clicked} × ${Math.min(count, 2)}`);
 
-        // Aktiver knappen igen hvis det var et fast navn
+        // Genaktiver knap hvis det var et fast navn
         if (fixedNames.includes(clicked)) {
           const btn = document.querySelector(`.nameBtn[data-name="${clicked}"]`);
           if (btn) {
