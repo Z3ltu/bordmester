@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetBtn = document.getElementById("resetBtn");
   const newNameInput = document.getElementById("newNameInput");
   const addNameBtn = document.getElementById("addNameBtn");
-  const nameContainer = document.getElementById("fixedNames");
 
   let names = [];
   let firstName = null;
@@ -15,19 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
   let startAngle = Math.random() * 2 * Math.PI;
   let arc = 0;
 
-  // 1. faste navne i alfabetisk rækkefølge
-  const fixedNames = ["Anders","Brian","Charlotte","Lars","Lars Henrik","Marianne","Patrick","Rikke"].sort();
+  // faste navne i alfabetisk rækkefølge (matcher index.html)
+  const fixedNames = ["Anders","Brian","Charlotte","Lars","Lars Henrik","Marianne","Patrick","Rikke"];
   const baseColors = ["#FF5733","#33A852","#3369E8","#FF33A6","#FFB300","#8E44AD","#00CED1","#FF8C00","#2ECC71","#E74C3C","#3498DB"];
-
-  // generér knapper alfabetisk
-  fixedNames.forEach(n => {
-    const btn = document.createElement("button");
-    btn.className = "nameBtn";
-    btn.textContent = n;
-    btn.dataset.name = n;
-    btn.addEventListener("pointerup", () => addName(n));
-    nameContainer.appendChild(btn);
-  });
 
   function setStatus(msg) { statusDiv.textContent = msg || ""; }
 
@@ -88,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function rotateWheel() {
     const duration = 4000 + Math.random() * 4000; // 4–8 sek
-    const decelTime = 5000 + Math.random() * 3000; // 5–8 sek slowdown (rettelse 3)
+    const decelTime = 5000 + Math.random() * 3000; // 5–8 sek slowdown
     const startTime = performance.now();
     const endTime = startTime + duration;
     const decelStart = endTime - decelTime;
@@ -163,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
     newNameInput.value = "";
   });
 
-  // 2. stop fjernelse mens hjulet drejer
+  // stop fjernelse mens hjulet drejer
   canvas.addEventListener("pointerup", e => {
     if (spinning) return; // 🚫 kan ikke fjerne mens hjulet kører
     if (!names.length) return;
