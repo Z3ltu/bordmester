@@ -131,6 +131,12 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus("Hjulet er nulstillet.");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     startAngle = Math.random() * 2 * Math.PI;
+
+    // aktiver alle knapper igen
+    document.querySelectorAll(".nameBtn").forEach(btn => {
+      btn.classList.remove("disabled");
+      btn.disabled = false;
+    });
   });
 
   function addName(n) {
@@ -140,6 +146,13 @@ document.addEventListener("DOMContentLoaded", () => {
     names = arrangeNames(names);
     drawWheel();
     setStatus(`Tilføjet: ${n} × 2`);
+
+    // Deaktiver knappen for dette navn
+    const btn = document.querySelector(`.nameBtn[data-name="${n}"]`);
+    if (btn) {
+      btn.classList.add("disabled");
+      btn.disabled = true;
+    }
   }
 
   addNameBtn.addEventListener("pointerup", () => {
@@ -171,6 +184,15 @@ document.addEventListener("DOMContentLoaded", () => {
         names = arrangeNames(names);
         drawWheel();
         setStatus(`Fjernet: ${clicked} × ${count}`);
+
+        // Aktiver knappen igen hvis det var et fast navn
+        if (fixedNames.includes(clicked)) {
+          const btn = document.querySelector(`.nameBtn[data-name="${clicked}"]`);
+          if (btn) {
+            btn.classList.remove("disabled");
+            btn.disabled = false;
+          }
+        }
       }, 500);
     }
   });
