@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let startAngle = Math.random() * 2 * Math.PI;
   let arc = 0;
 
-  // faste navne i alfabetisk rækkefølge (matcher index.html)
   const fixedNames = ["Anders","Brian","Charlotte","Lars","Lars Henrik","Marianne","Patrick","Rikke"];
   const baseColors = ["#FF5733","#33A852","#3369E8","#FF33A6","#FFB300","#8E44AD","#00CED1","#FF8C00","#2ECC71","#E74C3C","#3498DB"];
 
@@ -65,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.restore();
     });
 
-    // pilen øverst
     ctx.fillStyle = "#000";
     ctx.beginPath();
     ctx.moveTo(canvas.width / 2 - 15, 0);
@@ -76,8 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function rotateWheel() {
-    const duration = 4000 + Math.random() * 4000; // 4–8 sek
-    const decelTime = 5000 + Math.random() * 3000; // 5–8 sek slowdown
+    const duration = 4000 + Math.random() * 4000;
+    const decelTime = 5000 + Math.random() * 3000;
     const startTime = performance.now();
     const endTime = startTime + duration;
     const decelStart = endTime - decelTime;
@@ -153,13 +151,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Nu kan knapper både tilføje og fjerne navne
+  // Knapper: grøn = tilføj, grå = fjern
   document.querySelectorAll(".nameBtn").forEach(btn => {
     btn.addEventListener("pointerup", () => {
       const name = btn.dataset.name;
 
       if (btn.disabled) {
-        // Fjern navnet fra hjulet
         let count = 0;
         names = names.filter(n => n !== name || count++ >= 2);
         names = arrangeNames(names);
@@ -169,7 +166,6 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.classList.remove("disabled");
         btn.disabled = false;
       } else {
-        // Tilføj navnet
         addName(name);
       }
     });
