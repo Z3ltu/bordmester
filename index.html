@@ -7,51 +7,17 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.png">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 20px;
-      background: #f9f9f9;
-    }
+    body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 20px; background: #f9f9f9; }
     h1 { margin-bottom: 20px; }
-    canvas {
-      display: block;
-      margin: 0 auto 20px;
-      max-width: 400px;
-      width: 100%;
-      height: auto;
-      border: 2px solid #333;
-      border-radius: 10px;
-      background: #fff;
-    }
-    button {
-      margin: 5px;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+    canvas { display: block; margin: 0 auto 20px; max-width: 400px; width: 100%; height: auto; border: 2px solid #333; border-radius: 10px; background: #fff; }
+    button { margin: 5px; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; }
     #spinBtn { background: #2196F3; color: #fff; border: none; }
     #resetBtn { background: #f44336; color: #fff; border: none; }
     .nameBtn { background: #4CAF50; color: #fff; border: none; }
     .nameBtn.disabled { background: #999 !important; cursor: not-allowed; }
-    input {
-      padding: 8px;
-      font-size: 16px;
-      margin: 10px 0;
-      width: 80%;
-      max-width: 300px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
+    input { padding: 8px; font-size: 16px; margin: 10px 0; width: 80%; max-width: 300px; border: 1px solid #ccc; border-radius: 5px; }
     #status { margin-top: 15px; font-style: italic; color: #555; }
     #result { font-weight: bold; margin-top: 15px; }
-    @media (max-width: 600px) {
-      canvas { max-width: 320px; }
-      button, input { font-size: 18px; padding: 12px; width: 90%; max-width: 320px; }
-      h1 { font-size: 24px; }
-    }
   </style>
 </head>
 <body>
@@ -77,11 +43,11 @@
   </div>
 
   <h3>Tilføj navn:</h3>
-  <input type="text" id="newNameInput" placeholder="Skriv navn her">
-  <button id="addNameBtn">Tilføj navn</button>
+  <form id="addForm" autocomplete="off">
+    <input type="text" id="newNameInput" placeholder="Skriv navn her" required>
+    <button id="addNameBtn" type="submit">Tilføj navn</button>
+  </form>
 
-  <!-- Bemærk versionsnummer i script-link -->
-  <script src="script.js?v=5"></script>
+  <script src="script.js?v=6"></script>
 </body>
 </html>
-
