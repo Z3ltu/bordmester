@@ -171,15 +171,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  addNameBtn.addEventListener("pointerup", () => {
-    const n = (newNameInput.value || "").trim();
-    if (!n) return setStatus("Indtast et navn.");
-    if (fixedNames.some(fn => fn.toLowerCase() === n.toLowerCase())) {
-      return setStatus("Navnet findes allerede som fast navn.");
-    }
-    addName(n);
-    newNameInput.value = "";
-  });
+// Tilføj navn-knap
+addNameBtn.addEventListener("pointerup", () => {
+  const n = (newNameInput.value || "").trim();
+  if (!n) return setStatus("Indtast et navn.");
+  if (fixedNames.some(fn => fn.toLowerCase() === n.toLowerCase())) {
+    return setStatus("Navnet findes allerede som fast navn.");
+  }
+  addName(n);
+  newNameInput.value = "";
+});
+
+// NYT: Enter-genvej på inputfeltet
+newNameInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault(); // undgå at formen submitter
+    addNameBtn.click();     // trigger samme logik som knappen
+  }
+});
 
   canvas.addEventListener("pointerup", e => {
     if (spinning) return;
@@ -214,3 +223,4 @@ document.addEventListener("DOMContentLoaded", () => {
   drawWheel();
   setStatus("Hjulet starter tomt. Tilføj navne med knapper eller feltet.");
 });
+
