@@ -29,25 +29,31 @@ document.addEventListener("DOMContentLoaded", () => {
     return list;
   }
 
- function getWheelColors(n) {
-  const colors = [];
-  for (let i = 0; i < n; i++) {
-    let available = baseColors.slice();
+function getWheelColors(n) {
+  // Start med at gentage baseColors i rækkefølge
+  let colors = Array.from({ length: n }, (_, i) => baseColors[i % baseColors.length]);
 
-    // Fjern sidste brugte farve, så den ikke kan gentages
-    if (i > 0) {
-      available = available.filter(c => c !== colors[i - 1]);
+  // Gennemløb og justér hvis to naboer er ens
+  for (let i = 1; i < colors.length; i++) {
+    if (colors[i] === colors[i - 1]) {
+      // Find en alternativ farve som ikke matcher naboerne
+      const alternatives = baseColors.filter(c =>
+        c !== colors[i - 1] && (i + 1 >= colors.length || c !== colors[i + 1])
+      );
+      if (alternatives.length > 0) {
+        colors[i] = alternatives[Math.floor(Math.random() * alternatives.length)];
+      }
     }
-
-    // Hvis det er sidste felt, skal vi også sikre at første og sidste ikke matcher
-    if (i === n - 1 && colors.length > 0) {
-      available = available.filter(c => c !== colors[0]);
-    }
-
-    // Vælg en tilfældig farve fra de resterende muligheder
-    const chosen = available[Math.floor(Math.random() * available.length)];
-    colors.push(chosen);
   }
+
+  // Tjek også første og sidste felt (wrap-around)
+  if (colors[0] === colors[colors.length - 1]) {
+    const alternatives = baseColors.filter(c => c !== colors[0] && c !== colors[colors.length - 2]);
+    if (alternatives.length > 0) {
+      colors[colors.length - 1] = alternatives[Math.floor(Math.random() * alternatives.length)];
+    }
+  }
+
   return colors;
 }
 
@@ -256,4 +262,5 @@ document.addEventListener("DOMContentLoaded", () => {
   drawWheel();
   setStatus("Hjulet starter tomt. Tilføj navne med knapper eller feltet.");
 });
+
 
