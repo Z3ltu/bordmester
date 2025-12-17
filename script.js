@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetBtn = document.getElementById("resetBtn");
   const newNameInput = document.getElementById("newNameInput");
   const addNameBtn = document.getElementById("addNameBtn");
+  const addForm = document.getElementById("addForm");
 
   let names = [];
   let firstName = null;
@@ -64,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.restore();
     });
 
+    // Top pointer
     ctx.fillStyle = "#000";
     ctx.beginPath();
     ctx.moveTo(canvas.width / 2 - 15, 0);
@@ -74,8 +76,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function rotateWheel() {
-    const duration = 4000 + Math.random() * 4000;
-    const decelTime = 5000 + Math.random() * 3000;
+    const duration = 4000 + Math.random() * 4000; // 4–8 s
+    const decelTime = 5000 + Math.random() * 3000; // 5–8 s slowdown
     const startTime = performance.now();
     const endTime = startTime + duration;
     const decelStart = endTime - decelTime;
@@ -85,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
         spinning = false;
         if (!names.length) return;
 
-        const pointerAngle = -Math.PI / 2;
+        const pointerAngle = -Math.PI / 2; // top
         let adjusted = (pointerAngle - (startAngle % (2 * Math.PI))) % (2 * Math.PI);
         if (adjusted < 0) adjusted += 2 * Math.PI;
         const index = Math.floor(adjusted / arc);
@@ -112,6 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
     requestAnimationFrame(step);
   }
 
+  // Spin
   spinBtn.addEventListener("pointerup", () => {
     if (!spinning && names.length) {
       spinning = true;
@@ -122,6 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Reset
   resetBtn.addEventListener("pointerup", () => {
     names = [];
     firstName = null;
@@ -136,6 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Add name helper (×2 and disable button)
   function addName(n) {
     if (spinning) return setStatus("Du kan ikke tilføje navne mens hjulet drejer.");
     if (!firstName) firstName = n;
@@ -151,12 +156,37 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Knapper: grøn = tilføj, grå = fjern
+  // Shared input logic for button and Enter
+  function addNameFromInput() {
+    const n = (newNameInput.value || "").trim();
+    if (!n) return setStatus("Indtast et navn.");
+    if (fixedNames.some(fn => fn.toLowerCase() === n.toLowerCase())) {
+      return setStatus("Navnet findes allerede som fast navn.");
+    }
+    addName(n);
+    newNameInput.value = "";
+  }
+
+  // Button still works
+  addNameBtn.addEventListener("pointerup", () => {
+    addNameFromInput();
+  });
+
+  // Enter works via form submit
+  if (addForm) {
+    addForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      addNameFromInput();
+    });
+  }
+
+  // Fixed buttons: green = add, grey = remove
   document.querySelectorAll(".nameBtn").forEach(btn => {
     btn.addEventListener("pointerup", () => {
       const name = btn.dataset.name;
 
       if (btn.disabled) {
+        // Remove two occurrences
         let count = 0;
         names = names.filter(n => n !== name || count++ >= 2);
         names = arrangeNames(names);
@@ -171,33 +201,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-// Tilføj navn-knap
-addNameBtn.addEventListener("pointerup", () => {
-  const n = (newNameInput.value || "").trim();
-  if (!n) return setStatus("Indtast et navn.");
-  if (fixedNames.some(fn => fn.toLowerCase() === n.toLowerCase())) {
-    return setStatus("Navnet findes allerede som fast navn.");
-  }
-  addName(n);
-  newNameInput.value = "";
-});
-
-// NYT: Enter-genvej på inputfeltet
-newNameInput.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    event.preventDefault(); // undgå at formen submitter
-    addNameBtn.click();     // trigger samme logik som knappen
-  }
-});
-
+  // Remove by clicking the wheel (not while spinning)
   canvas.addEventListener("pointerup", e => {
     if (spinning) return;
     if (!names.length) return;
+
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
     let adjusted = (Math.atan2(y, x) - startAngle) % (2 * Math.PI);
     if (adjusted < 0) adjusted += 2 * Math.PI;
+
     const idx = Math.floor(adjusted / arc);
     const clicked = names[idx];
     if (clicked) {
@@ -220,7 +234,7 @@ newNameInput.addEventListener("keydown", (event) => {
     }
   });
 
+  // Initial
   drawWheel();
   setStatus("Hjulet starter tomt. Tilføj navne med knapper eller feltet.");
 });
-
