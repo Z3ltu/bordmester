@@ -29,9 +29,27 @@ document.addEventListener("DOMContentLoaded", () => {
     return list;
   }
 
-  function getWheelColors(n) {
-    return Array.from({ length: n }, (_, i) => baseColors[i % baseColors.length]);
+ function getWheelColors(n) {
+  const colors = [];
+  for (let i = 0; i < n; i++) {
+    let available = baseColors.slice();
+
+    // Fjern sidste brugte farve, så den ikke kan gentages
+    if (i > 0) {
+      available = available.filter(c => c !== colors[i - 1]);
+    }
+
+    // Hvis det er sidste felt, skal vi også sikre at første og sidste ikke matcher
+    if (i === n - 1 && colors.length > 0) {
+      available = available.filter(c => c !== colors[0]);
+    }
+
+    // Vælg en tilfældig farve fra de resterende muligheder
+    const chosen = available[Math.floor(Math.random() * available.length)];
+    colors.push(chosen);
   }
+  return colors;
+}
 
   function drawWheel(highlightIndex = null) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -238,3 +256,4 @@ document.addEventListener("DOMContentLoaded", () => {
   drawWheel();
   setStatus("Hjulet starter tomt. Tilføj navne med knapper eller feltet.");
 });
+
